@@ -83,11 +83,11 @@ _plugin.paymentStream().listen((event) {
 
 ## 📦 Como Rodar o Exemplo
 
-O repositório contém uma pasta `example/` que demonstra a implementação completa com **Cubit** e **Clean Architecture**.
+O repositório contém uma pasta `stone_integration_app/` que demonstra a implementação completa com **Cubit** e **Clean Architecture**.
 
 1.  Clone o repositório.
 2.  Adicione seu `stone.token` ao `gradle.properties` local.
-3.  Execute `flutter pub get` na raiz e na pasta `example`.
+3.  Execute `flutter pub get` na raiz e na pasta `stone_integration_app`.
 4.  Conecte seu Smart POS e execute `flutter run`.
 
 ---
