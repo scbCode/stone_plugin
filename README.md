@@ -1,6 +1,3 @@
-Aqui está o **README.md** completo, estruturado com o rigor técnico de um Engenheiro Sênior. Ele utiliza Markdown avançado, realces de sintaxe e uma organização que valoriza a arquitetura e a segurança do projeto.
-
----
 
 # Stone Smart POS Flutter Plugin 💳
 
@@ -100,6 +97,3 @@ Distribuído sob a licença MIT. Veja `LICENSE` para mais informações.
 
 **Desenvolvido por Saulo Costa** - *Senior Mobile Software Engineer*
 
----
-
-**Dica de Sênior:** Esse README agora serve como uma documentação técnica robusta que justifica suas escolhas de design. Se você for apresentar isso em uma entrevista, foque na parte de **Gestão de Segredos** e **Multi-vendor Support**, pois são dores reais de grandes empresas de pagamentos!
