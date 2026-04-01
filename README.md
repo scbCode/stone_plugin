@@ -100,5 +100,22 @@ O repositório contém uma pasta `stone_integration_app/` que demonstra a implem
 ## 📄 Licença
 Distribuído sob a licença MIT. Veja `LICENSE` para mais informações.
 
+📚 **Referências e Documentação Consultada**
+Para o desenvolvimento deste plugin e a implementação da arquitetura de integração, foram consultadas as seguintes fontes oficiais:
+
+**Core Framework (Flutter & Dart)**
+**[MethodCall Javadoc (io.flutter.plugin.common):](https://api.flutter.dev/javadoc/io/flutter/plugin/common/MethodCall.html)** Documentação técnica da engine do Flutter para o tratamento de chamadas recebidas do Dart no lado nativo (Android).
+
+**Flutter Platform Channels:[](https://docs.flutter.dev/platform-integration/platform-channels)** Guia oficial sobre a comunicação bidirecional entre Dart e código nativo via MethodChannel e EventChannel.
+
+**[Dart 3.0 - Records & Patterns:](https://dart.dev/language/records)** Estruturas de dados modernas utilizadas para retornos múltiplos e tipados no projeto.
+
+Hardware & SDK (Stone)
+**[Stone SDK Android - Documentação Oficial:](https://sdkandroid.stone.com.br/docs/o-que-e-a-sdk-android)** Portal do desenvolvedor Stone com as especificações de integração para Smart POS.
+
+Build & Automação (Gradle)
+**[Gradle Kotlin DSL (KTS) Primer:](https://docs.gradle.org/current/userguide/kotlin_dsl.html)** Documentação sobre o gerenciamento de builds Type-Safe utilizando Kotlin em vez de Groovy.
+
 **Desenvolvido por Saulo Costa** - *Senior Mobile Software Engineer*
+
 
