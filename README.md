@@ -66,25 +66,6 @@ O build pode ser parametrizado para diferentes terminais (Sunmi, Gertec, Positiv
 
 ---
 
-## 💻 Exemplo de Implementação (Dart)
-
-Graças ao uso de **Sealed Classes** e **Pattern Matching** (Dart 3.0), a gestão de estados no Flutter torna-se exaustiva e segura:
-
-```dart
-_plugin.paymentStream().listen((event) {
-  final step = StonePaymentStep.fromString(event);
-
-  return switch (state) {
-    PluginLoading() => showLoader(),
-    PluginSuccess(flag: var f) => handleSuccess(f),
-    PluginProcessing(status: var s) => updateStatus(s),
-    PluginError() => showError("Falha na transação"),
-  };
-});
-```
-
----
-
 ## 📦 Como Rodar o Exemplo
 
 O repositório contém uma pasta `stone_integration_app/` que demonstra a implementação completa com **Cubit** e **Clean Architecture**.
