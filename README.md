@@ -104,19 +104,25 @@ Distribuído sob a licença MIT. Veja `LICENSE` para mais informações.
 
 Para o desenvolvimento deste plugin e a implementação da arquitetura de integração, foram consultadas as seguintes fontes oficiais:
 
-## Core Framework (Flutter & Dart)
+ **Core Framework (Flutter & Dart)**
 **[MethodCall Javadoc (io.flutter.plugin.common):](https://api.flutter.dev/javadoc/io/flutter/plugin/common/MethodCall.html)** Documentação técnica da engine do Flutter para o tratamento de chamadas recebidas do Dart no lado nativo (Android).
 
 **[Flutter Platform Channels:](https://docs.flutter.dev/platform-integration/platform-channels)** Guia oficial sobre a comunicação bidirecional entre Dart e código nativo via MethodChannel e EventChannel.
 
 **[Dart 3.0 - Records & Patterns:](https://dart.dev/language/records)** Estruturas de dados modernas utilizadas para retornos múltiplos e tipados no projeto.
 
-## Hardware & SDK (Stone)
+ **Hardware & SDK (Stone)**
 
 **[Stone SDK Android - Documentação Oficial:](https://sdkandroid.stone.com.br/docs/o-que-e-a-sdk-android)** Portal do desenvolvedor Stone com as especificações de integração para Smart POS.
 
-## Build & Automação (Gradle)
+ **Build & Automação (Gradle)**
 **[Gradle Kotlin DSL (KTS) Primer:](https://docs.gradle.org/current/userguide/kotlin_dsl.html)** Documentação sobre o gerenciamento de builds Type-Safe utilizando Kotlin em vez de Groovy.
 
-**Nota para Recrutadores:** Este projeto reflete minha capacidade de lidar com integrações de baixo nível, hardware e fluxos de dados complexos, mantendo um código testável e organizado conforme as melhores práticas da comunidade Flutter.
 
+## 👨‍💻 Autor
+
+**Saulo Costa Barbosa** *Senior Mobile Software Engineer & Flutter Specialist*
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/saulo-barbosa-07647a195/)
+[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/scbCode)
+[![Email](https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:saulo.cbarbosa@gmail.com)
