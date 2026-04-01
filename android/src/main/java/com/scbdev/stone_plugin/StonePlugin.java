@@ -29,9 +29,7 @@ public class StonePlugin implements FlutterPlugin, MethodCallHandler {
 
     private MethodChannel channel;
     private EventChannel paymentEventChannel;
-    private EventChannel eventChannelDeepLinkPix;
     private Context context;
-
     private String pluginName = "stone_plugin";
 
     @Override
@@ -66,7 +64,7 @@ public class StonePlugin implements FlutterPlugin, MethodCallHandler {
         }
         if (method.equals(MethodEnum.activateStonecode)) {
             String stoneCode = call.arguments();
-            activateStonecode(result,stoneCode);
+            activateStonecode(result, stoneCode);
         }
     }
 
@@ -100,17 +98,17 @@ public class StonePlugin implements FlutterPlugin, MethodCallHandler {
 
     void activateStonecode(Result result, String stoneCode) {
         StoneManager.getInstance().
-                activateStonecode(context, stoneCode,new StoneCallback() {
-            @Override
-            public void onSuccess() {
-                result.success(true);
-            }
+                activateStonecode(context, stoneCode, new StoneCallback() {
+                    @Override
+                    public void onSuccess() {
+                        result.success(true);
+                    }
 
-            @Override
-            public void onError(String message) {
-                result.error("STONECODE_ERROR", message, null);
-            }
-        });
+                    @Override
+                    public void onError(String message) {
+                        result.error("STONECODE_ERROR", message, null);
+                    }
+                });
     }
 
     void payment(HashMap<String, String> arguments) {
