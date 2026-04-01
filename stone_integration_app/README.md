@@ -47,4 +47,3 @@ Como este projeto depende de um plugin proprietário/customizado (`stone_plugin`
 5. Rode em um terminal SmartPOS Android compatível: `flutter run`.
 
 ---
-**Nota para Recrutadores:** Este projeto reflete minha capacidade de lidar com integrações de baixo nível, hardware e fluxos de dados complexos, mantendo um código testável e organizado conforme as melhores práticas da comunidade Flutter.
