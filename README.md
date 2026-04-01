@@ -13,10 +13,10 @@ Este plugin permite a integração de alto nível entre aplicações **Flutter**
 Para garantir a estabilidade das comunicações de baixo nível, o ambiente de desenvolvimento segue estas especificações:
 
 ### Core Stack
-* **Flutter SDK:** `3.43.0`+ (Stable)
-* **Dart SDK:** `3.5.0` (Suporte total a *Records* e *Pattern Matching*)
-* **Java JDK:** `17` (Recomendado para compatibilidade com APIs Android modernas)
-* **Gradle:** `8.7` (Utilizando **Kotlin DSL - KTS**)
+* **Flutter SDK:** `3.41.6` (Stable Channel)
+* **Dart SDK:** `3.11.4` (Suporte avançado a Records e Pattern Matching)
+* **Java JDK:** `17`
+* **Gradle:** `8.7` (Kotlin DSL - KTS)
 
 ### Android Integration
 * **Android Gradle Plugin (AGP):** `8.5.2`
