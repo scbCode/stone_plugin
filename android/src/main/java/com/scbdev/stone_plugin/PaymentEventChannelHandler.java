@@ -31,7 +31,6 @@ public class PaymentEventChannelHandler implements EventChannel.StreamHandler,
     public void onCancel(Object arguments) {
         this.eventSink = null;
         StoneManager.getInstance().abortPayment();
-//        StoneManager.getInstance().setStatusListener(null);
         Log.i("PaymentEventChannelHandler", "onCancel");
     }
 
