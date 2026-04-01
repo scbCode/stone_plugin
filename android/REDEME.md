@@ -1,0 +1,1 @@
+https://sdkandroid.stone.com.br/page/artigo-exce%C3%A7%C3%B5es-proguard-ap%C3%AAndice
