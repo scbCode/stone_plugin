@@ -2,7 +2,6 @@
 # Stone Smart POS Flutter Plugin 💳
 
 [![Flutter](https://img.shields.io/badge/Flutter-v3.43+-02569B?logo=flutter&logoColor=white)](https://flutter.dev)
-[![State Management](https://img.shields.io/badge/State_Management-Bloc/Cubit-61D9FB?logo=google&logoColor=white)](https://pub.dev/packages/flutter_bloc)
 [![Stone SDK](https://img.shields.io/badge/Stone_SDK-v4.15.0-00A9E0?logo=android&logoColor=white)](https://docs.stone.com.br/)
 
 

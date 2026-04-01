@@ -1,7 +1,7 @@
 
 # Stone Integration App
 
-[![Flutter](https://img.shields.io/badge/Flutter-v3.12+-02569B?logo=flutter&logoColor=white)](https://flutter.dev)
+[![Flutter](https://img.shields.io/badge/Flutter-v3.41+-02569B?logo=flutter&logoColor=white)](https://flutter.dev)
 [![Bloc](https://img.shields.io/badge/State_Management-Bloc/Cubit-61D9FB?logo=google&logoColor=white)](https://pub.dev/packages/flutter_bloc)
 
 Este projeto é uma demonstração de integração robusta entre uma aplicação Flutter e o SDK de pagamentos da **Stone**. Ele foi desenvolvido com foco em escalabilidade, manutenibilidade e tratamento rigoroso de estados assíncronos, simulando um cenário real de automação comercial.
