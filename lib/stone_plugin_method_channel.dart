@@ -14,8 +14,8 @@ class MethodChannelStonePlugin extends StonePluginPlatform {
   @override
   Future<String?> init() async {
     try {
-      final version = await methodChannel.invokeMethod<String>('init');
-      return version;
+      final result = await methodChannel.invokeMethod<String>('init');
+      return result;
     } on PlatformException catch (e) {
       return "Erro ao inicializar o SDK";
     } catch (e) {
@@ -51,12 +51,12 @@ class MethodChannelStonePlugin extends StonePluginPlatform {
   Future<String?> payment({required PaymentModelPlatform paymentModel}) async {
     try {
 
-      final version = await methodChannel.invokeMethod<String>(
+      final result = await methodChannel.invokeMethod<String>(
         'payment',
         paymentModel.toMap()
       );
 
-      return version;
+      return result;
     } on PlatformException catch (e) {
       return  ("Erro ao processar pagamento");
     } catch (e) {
@@ -64,6 +64,7 @@ class MethodChannelStonePlugin extends StonePluginPlatform {
     }
   }
 
+  @override
   Stream paymentStream() {
     return eventChannel.receiveBroadcastStream();
   }
