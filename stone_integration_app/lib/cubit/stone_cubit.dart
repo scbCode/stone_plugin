@@ -40,7 +40,7 @@ class StoneCubit extends Cubit<PluginState> {
   Future<void> activateStonecode() async {
     emit(PluginLoading());
     try {
-      final result = await _plugin.activateStonecode(stoneCode: '750613196');
+      final result = await _plugin.activateStonecode(stoneCode: '*STONECODE*');
       if (!result) {
         emit(PluginError('Falha ao ativar Stonecode'));
         return;
@@ -58,7 +58,7 @@ class StoneCubit extends Cubit<PluginState> {
         paymentModel: PaymentModel(
           type: 'CREDIT_CARD',
           amount: (amount * 100).toStringAsFixed(0),
-          stoneCode: '750613196',
+          stoneCode: '*STONECODE*',
         ),
       );
 
