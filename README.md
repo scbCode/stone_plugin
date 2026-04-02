@@ -1,5 +1,5 @@
 
-# Stone Smart POS Flutter Plugin 💳
+# Stone Smart POS Flutter Plugin 💳 (Demo)
 
 [![Flutter](https://img.shields.io/badge/Flutter-v3.43+-02569B?logo=flutter&logoColor=white)](https://flutter.dev)
 [![Stone SDK](https://img.shields.io/badge/Stone_SDK-v4.15.0-00A9E0?logo=android&logoColor=white)](https://docs.stone.com.br/)
@@ -27,12 +27,11 @@ Para garantir a estabilidade das comunicações de baixo nível, o ambiente de d
 
 ## 🏗 Arquitetura do Sistema
 
-A arquitetura baseia-se no padrão de **Reactive Bridge**, isolando a complexidade do hardware da interface reativa do Flutter.
+A arquitetura baseada no padrão de **Reactive Bridge**, isolando a complexidade do hardware da interface reativa do Flutter.
 
 ### 1. Camada de Comunicação (Platform Channels)
 * `MethodChannel` (**Comandos**): Chamadas assíncronas para ações imediatas (ex: `iniciarPagamento`).
 * `EventChannel` (**Streams**): Fluxo de status em tempo real enviado pelo hardware (ex: `AGUARDANDO_CARTAO`, `PROCESSANDO`).
-
 
 
 ### 2. Camada Nativa (Android/Java)
@@ -71,7 +70,7 @@ O build pode ser parametrizado para diferentes terminais (Sunmi, Gertec, Positiv
 O repositório contém uma pasta `stone_integration_app/` que demonstra a implementação completa com **Cubit** e **Clean Architecture**.
 
 1.  Clone o repositório.
-2.  Adicione seu `stone.token` ao `gradle.properties` local.
+2.  Adicione seu `stone.token` ao `local.properties` local.
 3.  Execute `flutter pub get` na raiz e na pasta `stone_integration_app`.
 4.  Conecte seu Smart POS e execute `flutter run`.
 
