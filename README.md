@@ -1,5 +1,5 @@
 
-# Stone Smart POS Flutter Plugin 💳 (Demo)
+# Stone Smart POS Flutter Plugin 💳 (Demo) DART 3
 
 [![Flutter](https://img.shields.io/badge/Flutter-v3.43+-02569B?logo=flutter&logoColor=white)](https://flutter.dev)
 [![Stone SDK](https://img.shields.io/badge/Stone_SDK-v4.15.0-00A9E0?logo=android&logoColor=white)](https://docs.stone.com.br/)
