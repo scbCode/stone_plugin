@@ -76,10 +76,6 @@ O repositório contém uma pasta `stone_integration_app/` que demonstra a implem
 
 ---
 
-## 📄 Licença
-Distribuído sob a licença MIT. Veja `LICENSE` para mais informações.
-
-
 ## 📚 Referências e Documentação Consultada
 
 Para o desenvolvimento deste plugin e a implementação da arquitetura de integração, foram consultadas as seguintes fontes oficiais:

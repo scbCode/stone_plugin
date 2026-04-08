@@ -69,7 +69,7 @@ public class StoneManager {
                 () -> {
                     try {
                         user = StoneStart.init(context, stoneKeys);
-                        Stone.setAppName("VALET FITPARK");
+                        Stone.setAppName("NAME_APP");
                         if (user != null) {
                             new Handler(Looper.getMainLooper()).post(callback::onSuccess);
                             return;
