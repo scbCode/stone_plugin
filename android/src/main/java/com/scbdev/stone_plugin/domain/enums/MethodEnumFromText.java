@@ -1,14 +1,10 @@
-package com.scbdev.stone_plugin;
+package com.scbdev.stone_plugin.domain.enums;
 
-public enum MethodEnum {
-    init,
-    printReceipt,
-    payment,
-    abortPayment,
-    activateStonecode,
-}
+import com.scbdev.stone_plugin.domain.MethodEnum;
 
-class MethodEnumFromText{
+public class MethodEnumFromText {
+
+   public MethodEnumFromText(){}
     public static MethodEnum fromText(String text) {
         for (MethodEnum method : MethodEnum.values()) {
             if (method.name().equalsIgnoreCase(text)) {

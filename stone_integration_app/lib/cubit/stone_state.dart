@@ -68,7 +68,7 @@ extension StoneStateExt on PluginState {
       PluginSuccess(flag: StoneFlags thisFlag) =>
         thisFlag == StoneFlags.initialized
             ? [StoneIntent.activateStonecode]
-            : [StoneIntent.print, StoneIntent.amountSelector],
+            : [StoneIntent.amountSelector],
 
       PluginProcessing(status: StonePaymentStep thisStep) =>
         thisStep == StonePaymentStep.cancelled

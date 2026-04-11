@@ -1,4 +1,4 @@
-package com.scbdev.stone_plugin.params;
+package com.scbdev.stone_plugin.domain.params;
 
 import java.util.HashMap;
 

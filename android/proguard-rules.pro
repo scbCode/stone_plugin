@@ -8,4 +8,4 @@
 -keep class com.thoughtworks.xstream.converters.** {*;}
 
 -keep class com.scbdev.stone_plugin.BuildConfig { *; }
--keep class com.scbdev.stone_plugin.StoneManager { *; }
+-keep class com.scbdev.stone_plugin.infra.StoneSdkAdapter { *; }

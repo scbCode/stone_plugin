@@ -1,41 +1,42 @@
-package com.scbdev.stone_plugin;
+package com.scbdev.stone_plugin.channel;
 
 import android.util.Log;
 import android.os.Handler;
 import android.os.Looper;
 
+import com.scbdev.stone_plugin.domain.interfaces.IStoneGateway;
+import com.scbdev.stone_plugin.domain.interfaces.IStonePaymentListener;
+
 import io.flutter.plugin.common.EventChannel;
 public class PaymentEventChannelHandler implements EventChannel.StreamHandler,
-        StoneManager.StonePaymentListener {
-
-    private static PaymentEventChannelHandler instance;
-    private final Handler mainHandler = new Handler(Looper.getMainLooper());
-
-    public static synchronized PaymentEventChannelHandler getInstance() {
-        if (instance == null) {
-            instance = new PaymentEventChannelHandler();
-        }
-        return instance;
-    }
-
+        IStonePaymentListener  {
     private EventChannel.EventSink eventSink;
+
+    IStoneGateway stoneGateway;
+
+    public PaymentEventChannelHandler(IStoneGateway stoneGateway){
+        this.stoneGateway = stoneGateway;
+    }
 
     @Override
     public void onListen(Object arguments, EventChannel.EventSink events) {
         this.eventSink = events;
-        StoneManager.getInstance().setStatusListener(this);
+        stoneGateway.setStatusListener(this);
         Log.i("PaymentEventChannelHandler", "onListen");
     }
 
     @Override
     public void onCancel(Object arguments) {
         this.eventSink = null;
-        StoneManager.getInstance().abortPayment();
+        stoneGateway.abortPayment();
+        stoneGateway.setStatusListener(null); // ← falta isso
         Log.i("PaymentEventChannelHandler", "onCancel");
     }
 
+    Handler mainHandler = new Handler(Looper.getMainLooper());
     @Override
     public void onStatusChanged(String status) {
+
         if (eventSink != null) {
             mainHandler.post(() -> eventSink.success(status));
         }

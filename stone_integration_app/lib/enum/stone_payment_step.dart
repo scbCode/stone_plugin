@@ -4,7 +4,7 @@ enum StonePaymentStep {
   sending("TRANSACTION_SENDING", "Enviando a transação para a Stone"),
   removeCard("TRANSACTION_REMOVE_CARD", "Aguardando o cartão ser retirado"),
   cardRemoved("TRANSACTION_CARD_REMOVED", "Cartão removido"),
-  reversingError("REVERSING_TRANSACTION_WITH_ERROR", "Tentando reverter erro na transação"),
+  reversingError("REVERSING_TRANSACTION_WITH_ERROR", "Transação com erro."),
   typeSelection("TRANSACTION_TYPE_SELECTION", "Escolha a modalidade no terminal"),
   waitingQrCode("TRANSACTION_WAITING_QRCODE_SCAN", "Aguarde a leitura do QR Code"),
   paymentSuccess("PAYMENT_SUCCESS", "Pagamento realizado com sucesso"),

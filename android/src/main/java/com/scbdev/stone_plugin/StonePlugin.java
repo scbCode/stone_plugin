@@ -1,50 +1,91 @@
 package com.scbdev.stone_plugin;
 
+import android.util.Log;
+
 import android.content.Context;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.DefaultLifecycleObserver;
+import androidx.lifecycle.LifecycleOwner;
 
-import com.scbdev.stone_plugin.interfaces.StoneCallback;
+import com.scbdev.stone_plugin.channel.PaymentEventChannelHandler;
+import com.scbdev.stone_plugin.domain.MethodEnum;
+import com.scbdev.stone_plugin.domain.enums.MethodEnumFromText;
+import com.scbdev.stone_plugin.domain.callback.IStoneCallback;
+import com.scbdev.stone_plugin.domain.interfaces.IStoneGateway;
+import com.scbdev.stone_plugin.domain.params.PaymentParams;
+import com.scbdev.stone_plugin.domain.usecases.AbortPaymentUseCase;
+import com.scbdev.stone_plugin.domain.usecases.ActivateStonecodeUseCase;
+import com.scbdev.stone_plugin.domain.usecases.StoneInitUseCase;
+import com.scbdev.stone_plugin.domain.usecases.StonePaymentUseCase;
+import com.scbdev.stone_plugin.infra.StoneSdkAdapter;
 
-import android.util.Log;
+import stone.user.UserModel;
 
 import java.util.HashMap;
+import java.util.concurrent.Executors;
 
-import io.flutter.embedding.engine.plugins.FlutterPlugin;
+import android.os.Handler;
+import android.os.Looper;
+
+import io.flutter.embedding.engine.plugins.FlutterPlugin;                      // ← ESSE ESTAVA FALTANDO
 import io.flutter.embedding.engine.plugins.FlutterPlugin.FlutterPluginBinding;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.EventChannel;
-import io.flutter.plugin.common.EventChannel.EventSink;
-import io.flutter.plugin.common.BinaryMessenger;
+import io.flutter.embedding.engine.plugins.activity.ActivityAware;
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 
-import com.scbdev.stone_plugin.params.PaymentParams;
-
-/**
- * StonePlugin
- */
-public class StonePlugin implements FlutterPlugin, MethodCallHandler {
+public class StonePlugin implements FlutterPlugin, MethodCallHandler,  ActivityAware {
 
     private MethodChannel channel;
     private EventChannel paymentEventChannel;
     private Context context;
-    private String pluginName = "stone_plugin";
+    IStoneGateway stoneGateway;
+    PaymentEventChannelHandler paymentEventChannelHandler;
+    UserModel user;
+    private final Handler mainHandler = new Handler(Looper.getMainLooper());
+    StoneInitUseCase stoneInitUseCase;
+    ActivateStonecodeUseCase activateStonecodeUseCase;
+    StonePaymentUseCase stonePaymentUseCase;
+    AbortPaymentUseCase abortPaymentUseCase;
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
 
         context = flutterPluginBinding.getApplicationContext();
 
-        /// Canal de comunicação com o Flutter
-        channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), pluginName);
-        channel.setMethodCallHandler(this);
+        if (stoneGateway == null) {
+            stoneGateway = new StoneSdkAdapter(context,
+                    Executors.newSingleThreadExecutor());
+        }
 
-        /// Canal Stream de eventos com Flutter
-        paymentEventChannel = new EventChannel(flutterPluginBinding.getBinaryMessenger(), "stone_plugin_stream_payment");
-        paymentEventChannel.setStreamHandler(PaymentEventChannelHandler.getInstance());
+        if (paymentEventChannelHandler == null) {
+            paymentEventChannelHandler = new PaymentEventChannelHandler(stoneGateway);
+        }
 
+        stoneInitUseCase = new StoneInitUseCase(stoneGateway);
+        activateStonecodeUseCase = new ActivateStonecodeUseCase(stoneGateway);
+        stonePaymentUseCase = new StonePaymentUseCase(stoneGateway);
+        abortPaymentUseCase = new AbortPaymentUseCase(stoneGateway);
+        abortPaymentUseCase.execute();
+
+       setupChannel();
+    }
+
+
+
+    public void setupChannel() {
+        if (channel == null) {
+            channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "stone_plugin");
+            channel.setMethodCallHandler(this);
+        }
+        if (paymentEventChannel == null) {
+            paymentEventChannel =  new EventChannel(flutterPluginBinding.getBinaryMessenger(), "stone_plugin_stream_payment");
+            paymentEventChannel.setStreamHandler(paymentEventChannelHandler);
+        }
     }
 
     ///  MethodCall é uma classe que representa uma chamada de método do Flutter.
@@ -54,70 +95,96 @@ public class StonePlugin implements FlutterPlugin, MethodCallHandler {
         MethodEnum method = MethodEnumFromText.fromText(call.method);
         if (method.equals(MethodEnum.init)) {
             init(result);
-        }
-        if (method.equals(MethodEnum.printReceipt)) {
-            printReceipt(result);
+            return;
         }
         if (method.equals(MethodEnum.payment)) {
             payment(call.arguments());
             result.success("iniciando pagamento");
+            return;
         }
         if (method.equals(MethodEnum.activateStonecode)) {
             String stoneCode = call.arguments();
             activateStonecode(result, stoneCode);
+            return;
         }
     }
 
     void init(Result result) {
-        StoneManager.getInstance().init(context, new StoneCallback() {
-            @Override
-            public void onSuccess() {
-                result.success("SDK Inicializado com sucesso");
-            }
-
-            @Override
-            public void onError(String message) {
-                result.error("INIT_ERROR", message, null);
-            }
-        });
-    }
-
-    void printReceipt(Result result) {
-        StoneManager.getInstance().printReceipt(context, new StoneCallback() {
-            @Override
-            public void onSuccess() {
-                result.success("Recibo impresso com sucesso");
-            }
-
-            @Override
-            public void onError(String message) {
-                result.error("PRINT_ERROR", message, null);
-            }
-        });
-    }
-
-    void activateStonecode(Result result, String stoneCode) {
-        StoneManager.getInstance().
-                activateStonecode(context, stoneCode, new StoneCallback() {
+        stoneInitUseCase.execute(
+                new IStoneCallback() {
                     @Override
                     public void onSuccess() {
-                        result.success(true);
+                        mainHandler.post(() -> result.success("SDK Inicializado com sucesso"));
                     }
+
 
                     @Override
                     public void onError(String message) {
-                        result.error("STONECODE_ERROR", message, null);
+                        mainHandler.post(() ->
+                                result.error("INIT_ERROR", message, null));
+
                     }
-                });
+
+                    @Override
+                    public void getUserModel(UserModel userModel) {
+                        user = userModel;
+                    }
+                }
+        );
+    }
+
+    void activateStonecode(Result result, String stoneCode) {
+        activateStonecodeUseCase.execute(stoneCode, new IStoneCallback() {
+            @Override
+            public void onSuccess() {
+                mainHandler.post(() -> result.success(true));
+            }
+
+            @Override
+            public void onError(String message) {
+                mainHandler.post(() -> result.error("STONECODE_ERROR", message, null));
+            }
+
+            @Override
+            public void getUserModel(UserModel userModel) {
+                user = userModel;
+            }
+        });
     }
 
     void payment(HashMap<String, String> arguments) {
-        StoneManager.getInstance().payment(context,
-                PaymentParams.fromMap(arguments));
+        if (user == null)
+            return;
+
+        stonePaymentUseCase.execute(
+                PaymentParams.fromMap(arguments), user);
     }
 
     @Override
     public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
-        channel.setMethodCallHandler(null);
+        if (abortPaymentUseCase != null) abortPaymentUseCase.execute();
+        if (channel != null) channel.setMethodCallHandler(null);
+        if (paymentEventChannel != null) paymentEventChannel.setStreamHandler(null);
+        if (stoneGateway != null) stoneGateway.setStatusListener(null);
     }
+
+    @Override
+    public void onAttachedToActivity(@NonNull ActivityPluginBinding binding) {
+        if (abortPaymentUseCase != null) abortPaymentUseCase.execute();
+    }
+
+    @Override
+    public void onDetachedFromActivityForConfigChanges() {
+        if (abortPaymentUseCase != null) abortPaymentUseCase.execute();
+    }
+
+    @Override
+    public void onReattachedToActivityForConfigChanges(@NonNull ActivityPluginBinding binding) {
+    }
+
+    @Override
+    public void onDetachedFromActivity() {
+        if (abortPaymentUseCase != null) abortPaymentUseCase.execute();
+    }
+
 }

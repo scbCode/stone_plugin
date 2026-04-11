@@ -1,19 +1,18 @@
-package com.scbdev.stone_plugin;
+package com.scbdev.stone_plugin.infra;
 
-import android.widget.Toast;
 import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 
-import com.scbdev.stone_plugin.interfaces.StoneCallback;
-import com.scbdev.stone_plugin.params.PaymentParams;
+import com.scbdev.stone_plugin.BuildConfig;
+import com.scbdev.stone_plugin.domain.callback.IStoneCallback;
+import com.scbdev.stone_plugin.domain.interfaces.IStoneGateway;
+import com.scbdev.stone_plugin.domain.interfaces.IStonePaymentListener;
+import com.scbdev.stone_plugin.domain.params.PaymentParams;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import br.com.stone.posandroid.providers.PosPrintProvider;
 import br.com.stone.posandroid.providers.PosTransactionProvider;
@@ -26,25 +25,23 @@ import stone.application.interfaces.StoneCallbackInterface;
 import stone.database.transaction.TransactionObject;
 import stone.providers.ActiveApplicationProvider;
 import stone.providers.BaseTransactionProvider;
-import stone.user.UserModel;
 import stone.utils.keys.StoneKeyType;
 import stone.utils.Stone;
+import stone.user.UserModel;
 
-public class StoneManager {
+public class StoneSdkAdapter implements IStoneGateway {
 
-    public static synchronized StoneManager getInstance() {
-        if (instance == null) {
-            instance = new StoneManager();
-        }
-        return instance;
+    public StoneSdkAdapter(Context context, ExecutorService executor) {
+        this.context = context;
+        this.executor = executor;
     }
+
+    private Context context;
 
     BaseTransactionProvider transactionProvider;
 
     ActiveApplicationProvider provider;
-    private static StoneManager instance;
-
-    private List<UserModel> user;
+    private static StoneSdkAdapter instance;
 
     public interface StonePaymentListener {
         void onStatusChanged(String status);
@@ -52,11 +49,10 @@ public class StoneManager {
 
     private StonePaymentListener listener;
 
-    public void setStatusListener(StonePaymentListener listener) {
-        this.listener = listener;
-    }
+    private ExecutorService executor;
 
-    public void init(Context context, StoneCallback callback) {
+    @Override
+    public void init(IStoneCallback callback) {
         Map<StoneKeyType, String> stoneKeys = new HashMap<StoneKeyType, String>() {
             {
                 String put = put(StoneKeyType.QRCODE_AUTHORIZATION, BuildConfig
@@ -68,67 +64,32 @@ public class StoneManager {
         executor.execute(
                 () -> {
                     try {
-                        user = StoneStart.init(context, stoneKeys);
+                        final List<UserModel> userModelList = StoneStart.init(context, stoneKeys);
                         Stone.setAppName("NAME_APP");
-                        if (user != null) {
-                            new Handler(Looper.getMainLooper()).post(callback::onSuccess);
-                            return;
-                        }
-                        new Handler(Looper.getMainLooper()).post(() -> {
-                            callback.onError("Erro ao inicializar o SDK");
-                        });
+                        callback.getUserModel(userModelList.get(0));
+                        callback.onSuccess();
                     } catch (Exception e) {
-                        new Handler(Looper.getMainLooper()).post(() -> {
-                            callback.onError("Erro ao inicializar o SDK");
-                        });
+                        callback.onError("Erro ao inicializar o SDK");
                     }
                 });
     }
 
-    private final ExecutorService executor = Executors.newSingleThreadExecutor();
-
-    /* * Encapsulamento de Hardware I/O:
-     * Execução em Background via Executor + Resposta em UI Thread via Handler.
-     * Garante fluidez no Flutter e integridade no MethodChannel.
-     */
-    public void printReceipt(Context context, StoneCallback callback) {
-
-        PosPrintProvider customPosPrintProvider = new PosPrintProvider(context);
-        customPosPrintProvider.addLine("PAN : TEXT");
-        customPosPrintProvider.addLine("DATE/TIME : ");
-        customPosPrintProvider.addLine("AMOUNT : ");
-        customPosPrintProvider.addLine("ATK : ");
-        customPosPrintProvider.addLine("Signature");
-        customPosPrintProvider.setConnectionCallback(new StoneCallbackInterface() {
-            @Override
-            public void onSuccess() {
-                new Handler(Looper.getMainLooper()).post(callback::onSuccess);
-            }
-
-            @Override
-            public void onError() {
-                new Handler(Looper.getMainLooper()).post(() -> {
-                    callback.onError("Erro ao imprimir");
-                });
-            }
-        });
-
-        executor.execute(customPosPrintProvider::execute);
+    public void setStatusListener(StonePaymentListener listener) {
+        this.listener = listener;
     }
 
-    public void activateStonecode(Context context, String stoneCode, StoneCallback callback) {
+    @Override
+    public void activateStonecode(String stoneCode, IStoneCallback callback) {
         provider = new ActiveApplicationProvider(context);
         provider.setConnectionCallback(new StoneCallbackInterface() {
             @Override
             public void onSuccess() {
-                new Handler(Looper.getMainLooper()).post(callback::onSuccess);
+                callback.onSuccess();
             }
 
             @Override
             public void onError() {
-                new Handler(Looper.getMainLooper()).post(() -> {
-                    callback.onError("Erro ao ativar Stonecode");
-                });
+                callback.onError("Erro ao ativar Stonecode");
             }
         });
         executor.execute(
@@ -136,14 +97,13 @@ public class StoneManager {
                     try {
                         provider.activate(stoneCode);
                     } catch (Exception e) {
-                        new Handler(Looper.getMainLooper()).post(() -> {
-                            callback.onError("Erro ao ativar Stonecode");
-                        });
+                        callback.onError("Erro ao ativar Stonecode");
                     }
                 });
     }
 
-    public void payment(Context context, PaymentParams params) {
+    @Override
+    public void payment(PaymentParams params, UserModel userModel) {
         final TransactionObject transactionObject = new TransactionObject();
         transactionObject.setInstalmentTransaction(InstalmentTransactionEnum.ONE_INSTALMENT);
 
@@ -155,31 +115,37 @@ public class StoneManager {
 
         transactionObject.setAmount(params.amount);
 
-        transactionProvider = new PosTransactionProvider(context, transactionObject, user.get(0));
+        transactionProvider = new PosTransactionProvider(context, transactionObject, userModel);
 
         transactionProvider.setConnectionCallback(new StoneActionCallback() {
             @Override
             public void onStatusChanged(Action action) {
-                listener.onStatusChanged(action.name());
+                if (listener != null)
+                    listener.onStatusChanged(action.name());
 
             }
 
             @Override
             public void onSuccess() {
-                paymentReceipt(context, transactionObject);
-                listener.onStatusChanged("PAYMENT_SUCCESS");
+                paymentReceipt(transactionObject);
+                if (listener != null)
+                    listener.onStatusChanged("PAYMENT_SUCCESS");
             }
 
             @Override
             public void onError() {
-                listener.onStatusChanged(transactionProvider.getTransactionStatus().toString());
+                if (listener != null)
+                    if (transactionProvider != null) {
+                        listener.onStatusChanged(transactionProvider.getTransactionStatus().toString());
+                        abortPayment();
+                    }
             }
         });
 
         executor.execute(transactionProvider::execute);
     }
 
-    public void paymentReceipt(Context context, TransactionObject transactionObject) {
+    public void paymentReceipt(TransactionObject transactionObject) {
         PosPrintProvider customPosPrintProvider = new PosPrintProvider(context);
         customPosPrintProvider.addLine("PAN : " + transactionObject.getCardHolderNumber());
         customPosPrintProvider.addLine("DATE/TIME : " + transactionObject.getDate() + " " + transactionObject.getTime());
@@ -193,16 +159,22 @@ public class StoneManager {
 
             @Override
             public void onError() {
-                Toast.makeText(context, "Erro ao imprimir: " + customPosPrintProvider.getListOfErrors(), Toast.LENGTH_SHORT).show();
             }
         });
         executor.execute(customPosPrintProvider::execute);
     }
 
+    @Override
     public void abortPayment() {
         if (transactionProvider != null) {
             transactionProvider.abortPayment();
             Log.i("StoneManager", "abortPayment");
         }
+    }
+
+    @Override
+    public void setStatusListener(IStonePaymentListener listener) {
+        if (listener != null)
+        this.listener = status -> listener.onStatusChanged(status);
     }
 }

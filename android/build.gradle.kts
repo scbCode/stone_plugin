@@ -3,8 +3,8 @@
 // durante a configuração das dependências dinâmicas da Stone SDK.
 
 plugins {
-    id("com.android.library") version "8.11.1"
-    id("org.jetbrains.kotlin.android") version "2.2.20" apply false
+    id("com.android.library") version "8.7.3"
+    id("org.jetbrains.kotlin.android") version "2.0.21" apply false
 }
 
 group = "com.scbdev.stone_plugin"
@@ -56,6 +56,8 @@ android {
 }
 
 dependencies {
+    compileOnly("io.flutter:flutter_embedding_release:1.0.0-425cfb54d01a9472b3e81d9e76fd63a4a44cfbcb")
+//    compileOnly(fileTree(mapOf("dir" to "${project.findProperty("flutter.sdk") ?: System.getenv("FLUTTER_ROOT")}/bin/cache/artifacts/engine/android-arm/flutter.jar", "include" to listOf("*.jar"))))
     // 1. Recuperação dinâmica da versão da SDK via Gradle Properties (STONE_SDK_VERSION)
     // Permite a atualização da SDK via CI/CD sem necessidade de alteração manual no código-fonte.
     val stone_sdk_version = project.findProperty("STONE_SDK_VERSION")?.toString() ?: "4.15.0"
