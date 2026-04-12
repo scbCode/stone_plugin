@@ -18,6 +18,12 @@ Plugin Flutter para integração com terminais **Smart POS** da Stone, combinand
 - Configuração dinâmica por fabricante de terminal POS
 - Estratégia de configuração segura para segredos em ambiente local e CI/CD
 
+## 🎬 Demonstração
+
+![Demonstração do fluxo de pagamento no Smart POS](docs/stone-plugin-demo.gif)
+
+> Se o GIF estiver em outro caminho/nome, ajuste o link acima no README.
+
 ---
 
 ## 🏗 Arquitetura

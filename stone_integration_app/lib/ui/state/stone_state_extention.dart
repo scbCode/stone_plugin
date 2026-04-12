@@ -1,8 +1,8 @@
 import 'package:stone_integration_app/ui/state/stone_state.dart';
 
-import '../../enum/stone_flags.dart';
-import '../../enum/stone_intent_enum.dart';
-import '../../enum/stone_payment_step.dart';
+import '../../domain/enum/stone_flags.dart';
+import '../../domain/enum/stone_intent_enum.dart';
+import '../../domain/enum/stone_payment_step.dart';
 
 extension StoneStateExt on PluginState {
   bool get isBusy => this is PluginLoading;

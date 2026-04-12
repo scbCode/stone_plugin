@@ -1,8 +1,7 @@
 import 'package:equatable/equatable.dart';
-import 'package:stone_integration_app/enum/stone_flags.dart';
 
-import '../../enum/stone_intent_enum.dart';
-import '../../enum/stone_payment_step.dart';
+import '../../domain/enum/stone_flags.dart';
+import '../../domain/enum/stone_payment_step.dart';
 
 sealed class PluginState extends Equatable {
   @override

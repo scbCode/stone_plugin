@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:stone_integration_app/enum/stone_flags.dart';
-import 'package:stone_integration_app/enum/stone_intent_enum.dart';
-import 'package:stone_integration_app/enum/stone_payment_step.dart';
 
 import '../../data/model/payment_model.dart';
+import '../../domain/enum/stone_flags.dart';
+import '../../domain/enum/stone_intent_enum.dart';
+import '../../domain/enum/stone_payment_step.dart';
 import '../../domain/repositories/i_repository.dart';
 import '../state/stone_state.dart';
 
