@@ -13,6 +13,7 @@ dependencies:
 
   flutter_bloc: ^9.1.1
   cupertino_icons: ^1.0.8
+  get_it: ^9.2.1
   stone_plugin:
     path: ../
   equatable: ^2.0.5

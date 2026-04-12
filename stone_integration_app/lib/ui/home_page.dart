@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:stone_integration_app/cubit/stone_cubit.dart';
-import 'package:stone_integration_app/cubit/stone_state.dart';
+import 'package:stone_integration_app/ui/state/stone_state.dart';
+import 'package:stone_integration_app/ui/state/stone_state_extention.dart';
 import 'package:stone_integration_app/ui/widget/payment_pop_up.dart';
-import 'package:stone_plugin/stone_payment_status_enum.dart';
 
 import '../enum/stone_intent_enum.dart';
+import 'cubit/stone_cubit.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

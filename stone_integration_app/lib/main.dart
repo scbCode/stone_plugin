@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:stone_integration_app/cubit/stone_cubit.dart';
+import 'package:stone_integration_app/core/di/setup_dependencies.dart';
+import 'package:stone_integration_app/domain/repositories/i_repository.dart';
+import 'package:stone_integration_app/ui/cubit/stone_cubit.dart';
 import 'package:stone_integration_app/ui/home_page.dart';
-import 'package:stone_plugin/stone_plugin.dart';
 
 void main() {
+  SetupDependencies.setup();
   runApp(const MyApp());
 }
 
@@ -16,7 +18,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Stone App Flutter',
       theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepPurple)),
-      home: BlocProvider(create: (context) => StoneCubit(), child: HomePage()),
+      home: BlocProvider(create: (context) => StoneCubit(repository:
+          getIt<IRepository>()
+      ), child: HomePage()),
     );
   }
 }

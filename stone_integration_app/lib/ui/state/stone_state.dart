@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:stone_integration_app/enum/stone_flags.dart';
 
-import '../enum/stone_intent_enum.dart';
-import '../enum/stone_payment_step.dart';
+import '../../enum/stone_intent_enum.dart';
+import '../../enum/stone_payment_step.dart';
 
 sealed class PluginState extends Equatable {
   @override
@@ -55,28 +55,3 @@ class PluginProcessing extends PluginState {
   List<Object?> get props => [status];
 }
 
-extension StoneStateExt on PluginState {
-  bool get isBusy => this is PluginLoading;
-
-  List<StoneIntent> get availableActions {
-    return switch (this) {
-      PluginLoading() => [],
-
-      PluginSelectPayment() => [],
-
-      PluginSuccess(flag: StoneFlags thisFlag) =>
-        thisFlag == StoneFlags.initialized
-            ? [StoneIntent.activateStonecode]
-            : [StoneIntent.amountSelector],
-
-      PluginProcessing(status: StonePaymentStep thisStep) =>
-        thisStep == StonePaymentStep.cancelled
-            ? [StoneIntent.amountSelector]
-            : [StoneIntent.cancel],
-
-      PluginSuccess(flag: null) ||
-      PluginError() ||
-      PluginInitial() => [StoneIntent.initialize],
-    };
-  }
-}

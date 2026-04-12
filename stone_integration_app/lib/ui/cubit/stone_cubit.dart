@@ -1,27 +1,25 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:stone_integration_app/cubit/stone_state.dart';
 import 'package:stone_integration_app/enum/stone_flags.dart';
 import 'package:stone_integration_app/enum/stone_intent_enum.dart';
 import 'package:stone_integration_app/enum/stone_payment_step.dart';
-import 'package:stone_plugin/stone_plugin.dart';
 
-import '../data/model/payment_model.dart';
+import '../../data/model/payment_model.dart';
+import '../../domain/repositories/i_repository.dart';
+import '../state/stone_state.dart';
 
 
 class StoneCubit extends Cubit<PluginState> {
-  //O ideal é usar um singleton para instanciar o plugin
-  //mas para o exemplo vamos deixar assim
-  final StonePlugin _plugin = StonePlugin();
   StreamSubscription? _paymentStream;
+  final IRepository _repository;
 
-  StoneCubit() : super(PluginInitial());
+  StoneCubit({required IRepository repository}) : _repository = repository, super(PluginInitial());
 
   Future<void> init() async {
     emit(PluginLoading());
     try {
-      final res = await _plugin.init();
+      final res = await _repository.init();
       emit(PluginSuccess(res, flag: StoneFlags.initialized));
     } catch (e) {
       emit(PluginError(e.toString()));
@@ -31,7 +29,7 @@ class StoneCubit extends Cubit<PluginState> {
   Future<void> printReceipt() async {
     emit(PluginLoading());
     try {
-      await _plugin.printReceipt();
+      await _repository.printReceipt();
       emit(PluginSuccess('Impressão OK - Código 00'));
     } catch (e) {
       emit(PluginError(e.toString()));
@@ -41,7 +39,7 @@ class StoneCubit extends Cubit<PluginState> {
   Future<void> activateStonecode() async {
     emit(PluginLoading());
     try {
-      final result = await _plugin.activateStonecode(stoneCode: '*');
+      final result = await _repository.activateStonecode(stoneCode: '*');
       if (!result) {
         emit(PluginError('Falha ao ativar Stonecode'));
         return;
@@ -55,7 +53,7 @@ class StoneCubit extends Cubit<PluginState> {
   Future<void> processPayment(double amount) async {
     emit(PluginLoading());
     try {
-      await _plugin.payment(
+      await _repository.payment(
         paymentModel: PaymentModel(
           type: 'CREDIT_CARD',
           amount: (amount * 100).toStringAsFixed(0),
@@ -71,7 +69,7 @@ class StoneCubit extends Cubit<PluginState> {
   }
 
   void paymentStream() {
-    _paymentStream = _plugin.paymentStream().listen((onDate) {
+    _paymentStream = _repository.paymentStream().listen((onDate) {
       StonePaymentStep step = StonePaymentStep.fromString(onDate);
 
       if (step.isError) {
