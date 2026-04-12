@@ -38,7 +38,7 @@ import io.flutter.plugin.common.EventChannel;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 
-public class StonePlugin implements FlutterPlugin, MethodCallHandler,  ActivityAware {
+public class StonePlugin implements FlutterPlugin, MethodCallHandler, ActivityAware {
 
     private MethodChannel channel;
     private EventChannel paymentEventChannel;
@@ -72,9 +72,8 @@ public class StonePlugin implements FlutterPlugin, MethodCallHandler,  ActivityA
         abortPaymentUseCase = new AbortPaymentUseCase(stoneGateway);
         abortPaymentUseCase.execute();
 
-       setupChannel(flutterPluginBinding);
+        setupChannel(flutterPluginBinding);
     }
-
 
 
     public void setupChannel(FlutterPluginBinding flutterPluginBinding) {
@@ -83,7 +82,7 @@ public class StonePlugin implements FlutterPlugin, MethodCallHandler,  ActivityA
             channel.setMethodCallHandler(this);
         }
         if (paymentEventChannel == null) {
-            paymentEventChannel =  new EventChannel(flutterPluginBinding.getBinaryMessenger(), "stone_plugin_stream_payment");
+            paymentEventChannel = new EventChannel(flutterPluginBinding.getBinaryMessenger(), "stone_plugin_stream_payment");
             paymentEventChannel.setStreamHandler(paymentEventChannelHandler);
         }
     }
@@ -98,7 +97,20 @@ public class StonePlugin implements FlutterPlugin, MethodCallHandler,  ActivityA
             return;
         }
         if (method.equals(MethodEnum.payment)) {
-            payment(call.arguments());
+            if (user == null) {
+                mainHandler.post(() -> result.error("PAYMENT_ERROR", "Usuário não inicializado", null));
+                return;
+            }
+
+            HashMap<String, String> map = (HashMap<String, String>) call.arguments();
+            PaymentParams params = PaymentParams.fromMap(map);
+
+            if (params == null) {
+                mainHandler.post(() -> result.error("PAYMENT_ERROR", "Parâmetros inválidos", null));
+                return;
+            }
+
+            payment(params);
             result.success("iniciando pagamento");
             return;
         }
@@ -152,12 +164,9 @@ public class StonePlugin implements FlutterPlugin, MethodCallHandler,  ActivityA
         });
     }
 
-    void payment(HashMap<String, String> arguments) {
-        if (user == null)
-            return;
-
+    void payment(PaymentParams params) {
         stonePaymentUseCase.execute(
-                PaymentParams.fromMap(arguments), user);
+                params, user);
     }
 
     @Override
@@ -166,6 +175,9 @@ public class StonePlugin implements FlutterPlugin, MethodCallHandler,  ActivityA
         if (channel != null) channel.setMethodCallHandler(null);
         if (paymentEventChannel != null) paymentEventChannel.setStreamHandler(null);
         if (stoneGateway != null) stoneGateway.setStatusListener(null);
+        stoneGateway = null;
+        channel = null;
+        paymentEventChannelHandler = null;
     }
 
     @Override

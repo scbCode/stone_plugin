@@ -41,7 +41,6 @@ public class StoneSdkAdapter implements IStoneGateway {
     BaseTransactionProvider transactionProvider;
 
     ActiveApplicationProvider provider;
-    private static StoneSdkAdapter instance;
 
     public interface StonePaymentListener {
         void onStatusChanged(String status);

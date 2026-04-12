@@ -13,11 +13,19 @@ public class PaymentParams {
         this.stoneCode = stoneCode;
     }
 
-   static public PaymentParams fromMap(HashMap<String, String> map) {
-        String type = (String) map.get("type");
-        String amount = (String) map.get("amount");
-        String stoneCode = (String) map.get("stoneCode");
-        return new PaymentParams(type, amount, stoneCode);
+    static public PaymentParams fromMap(HashMap<String, String> map) {
+        if (map == null) return null;
+        if (map.isEmpty()) return null;
+
+        try {
+            String type = (String) map.get("type");
+            String amount = (String) map.get("amount");
+            String stoneCode = (String) map.get("stoneCode");
+            return new PaymentParams(type, amount, stoneCode);
+        } catch (Exception e) {
+            return null;
+        }
+
     }
 
 }

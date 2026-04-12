@@ -1,104 +1,104 @@
-Para Portfólio :)
+
 # Stone Smart POS Flutter Plugin 💳 (Demo) DART 3
 
-[![Flutter](https://img.shields.io/badge/Flutter-v3.43+-02569B?logo=flutter&logoColor=white)](https://flutter.dev)
-[![Stone SDK](https://img.shields.io/badge/Stone_SDK-v4.15.0-00A9E0?logo=android&logoColor=white)](https://docs.stone.com.br/)
+[![Flutter](https://img.shields.io/badge/Flutter-Plugin-02569B?logo=flutter&logoColor=white)](https://flutter.dev)
+[![Stone SDK](https://img.shields.io/badge/Stone_SDK-v4.15.0+-00A9E0?logo=android&logoColor=white)](https://docs.stone.com.br/)
 
+Plugin Flutter (demo) para integração com terminais **Smart POS** da Stone, com comunicação reativa via `MethodChannel` e `EventChannel`, separação em camadas e gateway desacoplado da SDK nativa.
 
-Este plugin permite a integração de alto nível entre aplicações **Flutter** e o ecossistema de terminais **Smart POS** da Stone. A arquitetura foi projetada para ser reativa, thread-safe e totalmente desacoplada, facilitando a manutenção e a escalabilidade para múltiplos hardwares.
+## 🛠 Ambiente e Stack Atual
 
-## 🛠 Desenvolvimento & Ambiente (Environment)
+### Core
+- **Dart SDK:** `^3.11.4` (`pubspec.yaml`)
+- **Java:** `17`
+- **Gradle Wrapper:** `8.9` (`android/gradle/wrapper/gradle-wrapper.properties`)
 
-Para garantir a estabilidade das comunicações de baixo nível, o ambiente de desenvolvimento segue estas especificações:
-
-### Core Stack
-* **Flutter SDK:** `3.41.6` (Stable Channel)
-* **Dart SDK:** `3.11.4` (Suporte avançado a Records e Pattern Matching)
-* **Java JDK:** `17`
-* **Gradle:** `8.7` (Kotlin DSL - KTS)
-
-### Android Integration
-* **Android Gradle Plugin (AGP):** `8.5.2`
-* **Compile SDK:** `34` (Android 14)
-* **Min SDK:** `23` (Android 6.0 - Requisito Stone SDK)
-* **Stone SDK (Core):** `4.15.0` (Injetada dinamicamente)
+### Android
+- **Android Gradle Plugin (AGP):** `8.7.3` (`android/build.gradle.kts`)
+- **Kotlin Gradle Plugin:** `2.0.21` (`android/build.gradle.kts`)
+- **compileSdk:** `36`
+- **minSdk:** `24`
+- **Stone SDK (default):** `4.15.0` (configurável por propriedade)
 
 ---
 
-## 🏗 Arquitetura do Sistema
+## 🏗 Arquitetura Atual
 
-A arquitetura baseada no padrão de **Reactive Bridge**, isolando a complexidade do hardware da interface reativa do Flutter.
+### Camada Flutter (Dart)
+- `lib/stone_plugin.dart`: Facade pública do plugin.
+- `lib/stone_plugin_method_channel.dart`: implementação via canais.
+- `lib/stone_plugin_platform_interface.dart`: contrato + `PlatformInterface.verifyToken(instance, _token)`.
 
-### 1. Camada de Comunicação (Platform Channels)
-* `MethodChannel` (**Comandos**): Chamadas assíncronas para ações imediatas (ex: `iniciarPagamento`).
-* `EventChannel` (**Streams**): Fluxo de status em tempo real enviado pelo hardware (ex: `AGUARDANDO_CARTAO`, `PROCESSANDO`).
+### Camada Android (Java)
+- `android/.../stone_plugin/StonePlugin.java`
+    - Entry point do plugin.
+    - Implementa `FlutterPlugin`, `MethodCallHandler` e `ActivityAware`.
+    - Cria e registra:
+        - `MethodChannel("stone_plugin")`
+        - `EventChannel("stone_plugin_stream_payment")`
+    - Injeta `StoneSdkAdapter` em UseCases.
+- UseCases (`domain/usecases`):
+    - `StoneInitUseCase`
+    - `ActivateStonecodeUseCase`
+    - `StonePaymentUseCase`
+    - `AbortPaymentUseCase`
+- Gateway:
+    - `domain/interfaces/IStoneGateway.java` (contrato)
+    - `infra/StoneSdkAdapter.java` (adapter da Stone SDK)
 
-
-### 2. Camada Nativa (Android/Java)
-* **`StonePlugin.java`**: Ponto de entrada que registra os canais.
-* **`StonePluginMethodHandler.java`**: Atua como um "Roteador", desacoplando as chamadas do Flutter da lógica de hardware.
-* **`StoneManager.java`**: O "Cérebro" da integração. Classe pura Java que encapsula a Stone SDK e gerencia o PINPAD de forma independente do framework.
-* **`PaymentEventChannelHandler.java`**: Transmite os callbacks do hardware para a Stream do Dart.
+### Stream de status de pagamento
+- `PaymentEventChannelHandler` implementa `EventChannel.StreamHandler` + `IStonePaymentListener`.
+- Em `onListen`: registra listener no gateway.
+- Em `onCancel`: limpa `eventSink`, aborta pagamento e remove listener.
 
 ---
 
-## 🚀 Configuração de Build (CI/CD & Security)
+## 🔁 Fluxo principal
 
-O projeto utiliza **Injeção Dinâmica de Dependências** para evitar o *bloatware* (incluindo apenas o driver do fabricante necessário) e proteger credenciais sensíveis.
+1. Flutter chama `init`
+2. Android inicializa Stone SDK (`StoneStart.init`)
+3. Flutter chama `activateStoneCode` com Stone Code
+4. Flutter chama `payment` com `PaymentModelPlatform`
+5. Status de transação é emitido via stream (`stone_plugin_stream_payment`)
 
-### Gestão de Segredos
-As credenciais de acesso ao repositório privado da Stone (PackageCloud) nunca são expostas no código. Elas são recuperadas via:
-1.  `gradle.properties` (Local)
-2.  `System.getenv("STONE_TOKEN")` (Ambiente de CI/CD como GitHub Actions)
+---
 
-```kotlin
-// settings.gradle.kts
-val stoneToken = properties.getProperty("stone.token") ?: System.getenv("STONE_TOKEN")
-```
+## 🔐 Configuração de Segredos e Repositórios
 
-### Multi-vendor Support
-O build pode ser parametrizado para diferentes terminais (Sunmi, Gertec, Positivo, etc) via linha de comando:
+### Token do repositório Stone
+Em `android/settings.gradle.kts`, o token é lido por:
+1. `local.properties` (`stone.token`)
+2. fallback para `System.getenv("STONE_TOKEN")`
+
+Repositórios usados:
+- `google()`
+- `mavenCentral()`
+- `gradlePluginPortal()`
+- `https://packagecloud.io/priv/$stoneToken/stone/pos-android/maven2`
+- `https://storage.googleapis.com/download.flutter.io`
+
+### Chaves para `BuildConfig`
+Em `android/build.gradle.kts`, as chaves são injetadas por variáveis de ambiente:
+- `QRCODE_AUTHORIZATION`
+- `QRCODE_PROVIDERID`
+
+---
+
+## 📦 Dependências dinâmicas por hardware
+
+No `android/build.gradle.kts`:
+
+- `STONE_SDK_VERSION` (default: `4.15.0`)
+- `POS_TYPE` (default: `sunmi`)
+
+Vendors suportados:
+- `sunmi`
+- `gertec`
+- `positivo`
+- `tectoy`
+- `ingenico`
+
+Exemplo de build parametrizado:
 
 ```bash
 ./gradlew assembleRelease -PSTONE_SDK_VERSION=4.15.0 -PPOS_TYPE=sunmi
-```
-
----
-
-## 📦 Como Rodar o Exemplo
-
-O repositório contém uma pasta `stone_integration_app/` que demonstra a implementação completa com **Cubit** e **Clean Architecture**.
-
-1.  Clone o repositório.
-2.  Adicione seu `stone.token` ao `local.properties` local.
-3.  Execute `flutter pub get` na raiz e na pasta `stone_integration_app`.
-4.  Conecte seu Smart POS e execute `flutter run`.
-
----
-
-## 📚 Referências e Documentação Consultada
-
-Para o desenvolvimento deste plugin e a implementação da arquitetura de integração, foram consultadas as seguintes fontes oficiais:
-
-### Core Framework (Flutter & Dart)
-**[MethodCall Javadoc (io.flutter.plugin.common):](https://api.flutter.dev/javadoc/io/flutter/plugin/common/MethodCall.html)** Documentação técnica da engine do Flutter para o tratamento de chamadas recebidas do Dart no lado nativo (Android).
-
-**[Flutter Platform Channels:](https://docs.flutter.dev/platform-integration/platform-channels)** Guia oficial sobre a comunicação bidirecional entre Dart e código nativo via MethodChannel e EventChannel.
-
-**[Dart 3.0 - Records & Patterns:](https://dart.dev/language/records)** Estruturas de dados modernas utilizadas para retornos múltiplos e tipados no projeto.
-
-### Hardware & SDK (Stone)
-
-**[Stone SDK Android - Documentação Oficial:](https://sdkandroid.stone.com.br/docs/o-que-e-a-sdk-android)** Portal do desenvolvedor Stone com as especificações de integração para Smart POS.
-
-### Build & Automação (Gradle)
-**[Gradle Kotlin DSL (KTS) Primer:](https://docs.gradle.org/current/userguide/kotlin_dsl.html)** Documentação sobre o gerenciamento de builds Type-Safe utilizando Kotlin em vez de Groovy.
-
-
-## 👨‍💻 Autor
-
-**Saulo Costa Barbosa** *Senior Mobile Software Engineer & Flutter Specialist*
-
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/saulo-barbosa-07647a195/)
-[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/scbCode)
-[![Email](https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:saulo.cbarbosa@gmail.com)
