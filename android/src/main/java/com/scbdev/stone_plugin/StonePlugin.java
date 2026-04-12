@@ -72,12 +72,12 @@ public class StonePlugin implements FlutterPlugin, MethodCallHandler,  ActivityA
         abortPaymentUseCase = new AbortPaymentUseCase(stoneGateway);
         abortPaymentUseCase.execute();
 
-       setupChannel();
+       setupChannel(flutterPluginBinding);
     }
 
 
 
-    public void setupChannel() {
+    public void setupChannel(FlutterPluginBinding flutterPluginBinding) {
         if (channel == null) {
             channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "stone_plugin");
             channel.setMethodCallHandler(this);
