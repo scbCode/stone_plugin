@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:stone_integration_app/enum/stone_flags.dart';
-import 'package:stone_plugin/stone_payment_status_enum.dart';
 
 import '../enum/stone_intent_enum.dart';
 import '../enum/stone_payment_step.dart';

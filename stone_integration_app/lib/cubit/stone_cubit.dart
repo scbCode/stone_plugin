@@ -7,7 +7,8 @@ import 'package:stone_integration_app/enum/stone_intent_enum.dart';
 import 'package:stone_integration_app/enum/stone_payment_step.dart';
 import 'package:stone_plugin/stone_plugin.dart';
 
-import 'model/payment_model.dart';
+import '../data/model/payment_model.dart';
+
 
 class StoneCubit extends Cubit<PluginState> {
   //O ideal é usar um singleton para instanciar o plugin
@@ -40,7 +41,7 @@ class StoneCubit extends Cubit<PluginState> {
   Future<void> activateStonecode() async {
     emit(PluginLoading());
     try {
-      final result = await _plugin.activateStonecode(stoneCode: '750613196');
+      final result = await _plugin.activateStonecode(stoneCode: '*');
       if (!result) {
         emit(PluginError('Falha ao ativar Stonecode'));
         return;
@@ -58,7 +59,7 @@ class StoneCubit extends Cubit<PluginState> {
         paymentModel: PaymentModel(
           type: 'CREDIT_CARD',
           amount: (amount * 100).toStringAsFixed(0),
-          stoneCode: '750613196',
+          stoneCode: '*',
         ),
       );
 
