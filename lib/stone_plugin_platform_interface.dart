@@ -1,7 +1,7 @@
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'data/datasources/channel/stone_plugin_method_channel.dart';
-import 'models/payment_model.dart';
+import 'data/models/payment_model.dart';
 
 abstract class StonePluginPlatform extends PlatformInterface {
   StonePluginPlatform() : super(token: _token);

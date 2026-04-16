@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import '../../../models/payment_model.dart';
 import '../../../stone_plugin_platform_interface.dart';
+import '../../models/payment_model.dart';
 
 /// An implementation of [StonePluginPlatform] that uses method channels.
 class MethodChannelStonePlugin extends StonePluginPlatform {

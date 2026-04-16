@@ -1,3 +1,5 @@
+import 'package:stone_plugin/data/models/payment_model.dart';
+
 import '../../data/model/payment_model.dart';
 
 abstract class IPluginDataSource {

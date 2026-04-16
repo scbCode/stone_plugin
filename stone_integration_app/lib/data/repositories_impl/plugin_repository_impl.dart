@@ -1,4 +1,5 @@
 import 'package:stone_integration_app/data/datasources/plugin_datasource.dart';
+import 'package:stone_plugin/data/models/payment_model.dart';
 import 'package:stone_plugin/stone_plugin.dart';
 
 import '../../data/model/payment_model.dart';

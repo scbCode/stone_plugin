@@ -1,7 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:stone_plugin/models/payment_model.dart';
-import 'package:stone_plugin/channel/stone_plugin_method_channel.dart';
+import 'package:stone_plugin/data/datasources/channel/stone_plugin_method_channel.dart';
+import 'package:stone_plugin/data/models/payment_model.dart';
 
 class _PaymentModelStub extends PaymentModelPlatform {
   _PaymentModelStub({required super.type, required super.amount, required super.stoneCode});
@@ -30,10 +30,10 @@ void main() {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(channel, (MethodCall call) async {
       expect(call.method, 'init');
-      return 'initialized';
+      return 'SDK Inicializado com sucesso';
     });
 
-    expect(await platform.init(), 'initialized');
+    expect(await platform.init(), 'SDK Inicializado com sucesso');
   });
 
   test('init returns fallback message on PlatformException', () async {

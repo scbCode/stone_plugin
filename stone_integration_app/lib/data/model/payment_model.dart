@@ -1,6 +1,7 @@
 import 'dart:collection';
 
-import 'package:stone_plugin/models/payment_model.dart';
+import 'package:stone_plugin/data/models/payment_model.dart';
+
 
 class PaymentModel implements PaymentModelPlatform {
   final String type;

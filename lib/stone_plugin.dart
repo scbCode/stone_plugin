@@ -1,4 +1,4 @@
-import 'models/payment_model.dart';
+import 'data/models/payment_model.dart';
 import 'stone_plugin_platform_interface.dart';
 
 class StonePlugin {

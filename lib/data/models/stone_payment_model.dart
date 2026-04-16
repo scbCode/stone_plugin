@@ -1,5 +1,5 @@
 
-import '../stone_payment_status_enum.dart';
+import '../../stone_payment_status_enum.dart';
 
 class StonePaymentModel {
   StonePaymentStatus status;
