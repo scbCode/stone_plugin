@@ -6,15 +6,15 @@ import '../../data/model/payment_model.dart';
 import '../../domain/enum/stone_flags.dart';
 import '../../domain/enum/stone_intent_enum.dart';
 import '../../domain/enum/stone_payment_step.dart';
-import '../../domain/repositories/i_repository.dart';
+import '../../domain/repositories/i_plugin_repository.dart';
 import '../state/stone_state.dart';
 
 
 class StoneCubit extends Cubit<PluginState> {
   StreamSubscription? _paymentStream;
-  final IRepository _repository;
+  final IPluginRepository _repository;
 
-  StoneCubit({required IRepository repository}) : _repository = repository, super(PluginInitial());
+  StoneCubit({required IPluginRepository repository}) : _repository = repository, super(PluginInitial());
 
   Future<void> init() async {
     emit(PluginLoading());

@@ -1,12 +1,14 @@
+import 'package:stone_integration_app/data/datasources/plugin_datasource.dart';
 import 'package:stone_plugin/stone_plugin.dart';
 
 import '../../data/model/payment_model.dart';
-import '../../domain/repositories/i_repository.dart';
+import '../../domain/datasource/i_plugin_datasource.dart';
+import '../../domain/repositories/i_plugin_repository.dart';
 
-class RepositoryImpl implements IRepository {
-  final StonePlugin _plugin;
+class PluginRepositoryImpl implements IPluginRepository {
+  final IPluginDataSource _plugin;
 
-  RepositoryImpl({StonePlugin? plugin}) : _plugin = plugin ?? StonePlugin();
+  PluginRepositoryImpl(IPluginDataSource plugin) : _plugin = plugin;
 
   @override
   Future<String?> init() {

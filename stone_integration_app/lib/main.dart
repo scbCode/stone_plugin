@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stone_integration_app/core/di/setup_dependencies.dart';
-import 'package:stone_integration_app/domain/repositories/i_repository.dart';
 import 'package:stone_integration_app/ui/cubit/stone_cubit.dart';
 import 'package:stone_integration_app/ui/home_page.dart';
+
+import 'domain/repositories/i_plugin_repository.dart';
 
 void main() {
   SetupDependencies.setup();
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
       title: 'Stone App Flutter',
       theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepPurple)),
       home: BlocProvider(create: (context) => StoneCubit(repository:
-          getIt<IRepository>()
+          getIt<IPluginRepository>()
       ), child: HomePage()),
     );
   }

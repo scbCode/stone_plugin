@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'models/payment_model.dart';
-import 'stone_plugin_platform_interface.dart';
+import '../../../models/payment_model.dart';
+import '../../../stone_plugin_platform_interface.dart';
 
 /// An implementation of [StonePluginPlatform] that uses method channels.
 class MethodChannelStonePlugin extends StonePluginPlatform {
@@ -38,7 +38,10 @@ class MethodChannelStonePlugin extends StonePluginPlatform {
   @override
   Future<bool> activateStonecode({required String stoneCode}) async {
     try {
-      final result = await methodChannel.invokeMethod<bool>('activateStoneCode',stoneCode);
+      final result = await methodChannel.invokeMethod<bool>(
+        'activateStoneCode',
+        stoneCode,
+      );
       return result ?? false;
     } on PlatformException catch (e) {
       return false;
@@ -50,15 +53,14 @@ class MethodChannelStonePlugin extends StonePluginPlatform {
   @override
   Future<String?> payment({required PaymentModelPlatform paymentModel}) async {
     try {
-
       final result = await methodChannel.invokeMethod<String>(
         'payment',
-        paymentModel.toMap()
+        paymentModel.toMap(),
       );
 
       return result;
     } on PlatformException catch (e) {
-      return  ("Erro ao processar pagamento");
+      return ("Erro ao processar pagamento");
     } catch (e) {
       return ("Erro desconhecido");
     }
@@ -68,5 +70,4 @@ class MethodChannelStonePlugin extends StonePluginPlatform {
   Stream paymentStream() {
     return eventChannel.receiveBroadcastStream();
   }
-
 }

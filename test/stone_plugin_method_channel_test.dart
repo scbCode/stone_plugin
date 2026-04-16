@@ -1,7 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:stone_plugin/models/payment_model.dart';
-import 'package:stone_plugin/stone_plugin_method_channel.dart';
+import 'package:stone_plugin/channel/stone_plugin_method_channel.dart';
 
 class _PaymentModelStub extends PaymentModelPlatform {
   _PaymentModelStub({required super.type, required super.amount, required super.stoneCode});
@@ -19,6 +19,7 @@ void main() {
 
   final platform = MethodChannelStonePlugin();
   const channel = MethodChannel('stone_plugin');
+
 
   tearDown(() {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger

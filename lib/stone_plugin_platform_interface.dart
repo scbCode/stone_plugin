@@ -1,7 +1,7 @@
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
+import 'data/datasources/channel/stone_plugin_method_channel.dart';
 import 'models/payment_model.dart';
-import 'stone_plugin_method_channel.dart';
 
 abstract class StonePluginPlatform extends PlatformInterface {
   StonePluginPlatform() : super(token: _token);
@@ -34,7 +34,8 @@ abstract class StonePluginPlatform extends PlatformInterface {
   Future<bool> activateStonecode({required String stoneCode}) =>
       throw UnimplementedError('activateStonecode() has not been implemented.');
 
-  Future<String?> payment({required PaymentModelPlatform paymentModel}) => throw UnimplementedError('payment() has not been implemented.');
+  Future<String?> payment({required PaymentModelPlatform paymentModel}) =>
+      throw UnimplementedError('payment() has not been implemented.');
 
   Stream paymentStream() {
     throw UnimplementedError('paymentStream() has not been implemented.');

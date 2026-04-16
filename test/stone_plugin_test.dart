@@ -2,7 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:stone_plugin/models/payment_model.dart';
 import 'package:stone_plugin/stone_plugin.dart';
-import 'package:stone_plugin/stone_plugin_method_channel.dart';
+import 'package:stone_plugin/channel/stone_plugin_method_channel.dart';
 import 'package:stone_plugin/stone_plugin_platform_interface.dart';
 
 class _MockStonePlatform extends StonePluginPlatform
