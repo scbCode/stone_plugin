@@ -1,0 +1,13 @@
+#!/bin/sh
+
+echo "Iniciando [flutter analyze] antes do um commit..."
+flutter analyze
+
+if [ $? -eq 0 ]; then
+    echo "Realizando commit..."
+    exit 0 # Permite o push
+else
+    echo "Commit cancelado."
+    exit 1 # Cancela o push
+fi
+
