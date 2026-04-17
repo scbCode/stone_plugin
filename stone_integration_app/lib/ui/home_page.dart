@@ -31,14 +31,14 @@ class _State extends State<HomePage> {
                 },
               ),
             ).then((v) {
-              if (!context.mounted) return;
+              // if (!context.mounted) return;
               context.read<StoneCubit>().selectPaymentCancel();
             });
           }
         },
         builder: (BuildContext context, PluginState state) {
           if (state is PluginLoading) {
-            return const Center(
+            return  Center(
               child: CircularProgressIndicator(color: Colors.black),
             );
           }
