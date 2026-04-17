@@ -1,8 +1,6 @@
-import 'package:stone_integration_app/data/datasources/plugin_datasource.dart';
-import 'package:stone_plugin/data/models/payment_model.dart';
-import 'package:stone_plugin/stone_plugin.dart';
 
-import '../../data/model/payment_model.dart';
+import 'package:stone_plugin/domain/params/payment_params.dart';
+
 import '../../domain/datasource/i_plugin_datasource.dart';
 import '../../domain/repositories/i_plugin_repository.dart';
 
@@ -27,8 +25,8 @@ class PluginRepositoryImpl implements IPluginRepository {
   }
 
   @override
-  Future<String?> payment({required PaymentModel paymentModel}) {
-    return _plugin.payment(paymentModel: paymentModel);
+  Future<String?> payment({required PaymentParams params}) {
+    return _plugin.payment(params: params);
   }
 
   @override

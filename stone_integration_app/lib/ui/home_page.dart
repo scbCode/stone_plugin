@@ -22,10 +22,17 @@ class _State extends State<HomePage> {
       body: BlocConsumer<StoneCubit, PluginState>(
         listener: (context, state) {
           if (state is PluginSelectPayment) {
-            showDialog(context: context, builder:
-                (context) => PaymentPopUp(onPaymentSelected: (amount){
+            showDialog(
+              context: context,
+              builder: (context) => PaymentPopUp(
+                onPaymentSelected: (amount) {
                   this.context.read<StoneCubit>().processPayment(amount);
-                },)).then((v){
+                },
+              ),
+            ).then((v) {
+              if (!mounted) {
+                return;
+              }
               context.read<StoneCubit>().selectPaymentCancel();
             });
           }
@@ -43,7 +50,6 @@ class _State extends State<HomePage> {
             PluginProcessing(status: var s) => s.message,
             PluginSuccess(result: var r) => r ?? 'Sucesso!',
             PluginError(message: var m) => m,
-            PluginState() => throw UnimplementedError(),
           };
 
           return Center(

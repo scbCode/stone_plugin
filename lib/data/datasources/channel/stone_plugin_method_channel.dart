@@ -1,25 +1,35 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import '../../../stone_plugin_platform_interface.dart';
-import '../../models/payment_model.dart';
+import '../../../domain/interface/stone_plugin_platform_interface.dart';
+import '../../../domain/params/payment_params.dart';
+import '../../mappers/payment_params_mapper.dart';
 
-/// An implementation of [StonePluginPlatform] that uses method channels.
 class MethodChannelStonePlugin extends StonePluginPlatform {
-  /// The method channel used to interact with the native platform.
 
-  @visibleForTesting
-  final methodChannel = const MethodChannel('stone_plugin');
-  final eventChannel = EventChannel('stone_plugin_stream_payment');
+  MethodChannelStonePlugin({required this.methodChannel, required this.eventChannel});
+  final MethodChannel methodChannel;
+  final EventChannel eventChannel;
+
+  void _logChannelError(
+    String method,
+    Object error,
+    StackTrace stackTrace,
+  ) {
+    debugPrint('[StonePlugin][$method] $error');
+    debugPrintStack(stackTrace: stackTrace);
+  }
 
   @override
   Future<String?> init() async {
     try {
       final result = await methodChannel.invokeMethod<String>('init');
       return result;
-    } on PlatformException catch (e) {
-      return "Erro ao inicializar o SDK";
-    } catch (e) {
-      return "Erro desconhecido";
+    } on PlatformException catch (e, s) {
+      _logChannelError('init', e, s);
+      return 'Erro ao inicializar o SDK';
+    } catch (e, s) {
+      _logChannelError('init', e, s);
+      return 'Erro desconhecido';
     }
   }
 
@@ -28,10 +38,12 @@ class MethodChannelStonePlugin extends StonePluginPlatform {
     try {
       final result = await methodChannel.invokeMethod<String>('printReceipt');
       return result;
-    } on PlatformException catch (e) {
-      return "Erro ao imprimir";
-    } catch (e) {
-      return "Erro desconhecido";
+    } on PlatformException catch (e, s) {
+      _logChannelError('printReceipt', e, s);
+      return 'Erro ao imprimir';
+    } catch (e, s) {
+      _logChannelError('printReceipt', e, s);
+      return 'Erro desconhecido';
     }
   }
 
@@ -43,26 +55,30 @@ class MethodChannelStonePlugin extends StonePluginPlatform {
         stoneCode,
       );
       return result ?? false;
-    } on PlatformException catch (e) {
+    } on PlatformException catch (e, s) {
+      _logChannelError('activateStonecode', e, s);
       return false;
-    } catch (e) {
+    } catch (e, s) {
+      _logChannelError('activateStonecode', e, s);
       return false;
     }
   }
 
   @override
-  Future<String?> payment({required PaymentModelPlatform paymentModel}) async {
+  Future<String?> payment({required PaymentParams params}) async {
     try {
       final result = await methodChannel.invokeMethod<String>(
         'payment',
-        paymentModel.toMap(),
+        params.toMap(),
       );
 
       return result;
-    } on PlatformException catch (e) {
-      return ("Erro ao processar pagamento");
-    } catch (e) {
-      return ("Erro desconhecido");
+    } on PlatformException catch (e, s) {
+      _logChannelError('payment', e, s);
+      return 'Erro ao processar pagamento';
+    } catch (e, s) {
+      _logChannelError('payment', e, s);
+      return 'Erro desconhecido';
     }
   }
 

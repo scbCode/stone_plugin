@@ -1,13 +1,15 @@
-abstract class PaymentModelPlatform {
+import 'package:flutter/cupertino.dart';
+
+@immutable
+class PaymentParams {
   final String type;
   final String amount;
   final String stoneCode;
 
-  PaymentModelPlatform({
+  const PaymentParams({
     required this.type,
     required this.amount,
     required this.stoneCode,
   });
 
-  Map<String, Object> toMap();
 }

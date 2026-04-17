@@ -1,4 +1,4 @@
-import '../../data/model/payment_model.dart';
+import 'package:stone_plugin/domain/params/payment_params.dart';
 
 abstract class IPluginRepository {
   Future<String?> init();
@@ -7,7 +7,7 @@ abstract class IPluginRepository {
 
   Future<bool> activateStonecode({required String stoneCode});
 
-  Future<String?> payment({required PaymentModel paymentModel});
+  Future<String?> payment({required PaymentParams params});
 
   Stream<String?> paymentStream();
 }

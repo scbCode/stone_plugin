@@ -1,14 +1,19 @@
+import 'package:flutter/services.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
+import 'package:stone_plugin/core/utils/consts.dart';
 
-import 'data/datasources/channel/stone_plugin_method_channel.dart';
-import 'data/models/payment_model.dart';
+import '../../data/datasources/channel/stone_plugin_method_channel.dart';
+import '../params/payment_params.dart';
 
 abstract class StonePluginPlatform extends PlatformInterface {
   StonePluginPlatform() : super(token: _token);
 
   static final Object _token = Object();
 
-  static StonePluginPlatform _instance = MethodChannelStonePlugin();
+  static StonePluginPlatform _instance = MethodChannelStonePlugin(
+    methodChannel: MethodChannel(Consts.channelName),
+    eventChannel: EventChannel(Consts.eventChannelStreamPayment),
+  );
 
   /// The default instance of [StonePluginPlatform] to use.
   ///
@@ -34,7 +39,7 @@ abstract class StonePluginPlatform extends PlatformInterface {
   Future<bool> activateStonecode({required String stoneCode}) =>
       throw UnimplementedError('activateStonecode() has not been implemented.');
 
-  Future<String?> payment({required PaymentModelPlatform paymentModel}) =>
+  Future<String?> payment({required PaymentParams params}) =>
       throw UnimplementedError('payment() has not been implemented.');
 
   Stream paymentStream() {

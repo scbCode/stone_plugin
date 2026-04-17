@@ -1,5 +1,4 @@
-import 'package:stone_integration_app/data/model/payment_model.dart';
-import 'package:stone_plugin/data/models/payment_model.dart';
+import 'package:stone_plugin/domain/params/payment_params.dart';
 import 'package:stone_plugin/stone_plugin.dart';
 
 import '../../domain/datasource/i_plugin_datasource.dart';
@@ -20,8 +19,8 @@ class PluginDataSource implements IPluginDataSource {
   }
 
   @override
-  Future<String?> payment({required PaymentModel paymentModel}) async {
-    return await _plugin.payment(paymentModel: paymentModel);
+  Future<String?> payment({required PaymentParams params}) async {
+    return await _plugin.payment(params: params);
   }
 
   @override

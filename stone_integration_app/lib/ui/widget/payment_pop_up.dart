@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 typedef TransactionItem = ({String label, double amount});
 
 class PaymentPopUp extends StatelessWidget {
-  Function onPaymentSelected;
+  final Function onPaymentSelected;
 
   PaymentPopUp({super.key, required this.onPaymentSelected});
 

@@ -1,25 +1,33 @@
+import 'dart:collection';
+
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:stone_plugin/data/datasources/channel/stone_plugin_method_channel.dart';
-import 'package:stone_plugin/data/models/payment_model.dart';
+import 'package:stone_plugin/domain/params/payment_params.dart';
 
-class _PaymentModelStub extends PaymentModelPlatform {
-  _PaymentModelStub({required super.type, required super.amount, required super.stoneCode});
+class _PaymentModelStub extends PaymentParams {
+  const _PaymentModelStub({
+    required super.type,
+    required super.amount,
+    required super.stoneCode,
+  });
 
-  @override
-  Map<String, Object> toMap() => {
-        'type': type,
-        'amount': amount,
-        'stoneCode': stoneCode,
-      };
+  HashMap<String, String> toMap() => HashMap<String, String>
+      .from({
+    'type': type,
+    'amount': amount,
+    'stoneCode': stoneCode,
+  });
 }
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-
-  final platform = MethodChannelStonePlugin();
   const channel = MethodChannel('stone_plugin');
-
+  const eventChannel = EventChannel('stone_plugin');
+  final platform = MethodChannelStonePlugin(
+    methodChannel: channel,
+    eventChannel: eventChannel,
+  );
 
   tearDown(() {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
@@ -29,9 +37,9 @@ void main() {
   test('init returns native result', () async {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(channel, (MethodCall call) async {
-      expect(call.method, 'init');
-      return 'SDK Inicializado com sucesso';
-    });
+          expect(call.method, 'init');
+          return 'SDK Inicializado com sucesso';
+        });
 
     expect(await platform.init(), 'SDK Inicializado com sucesso');
   });
@@ -39,8 +47,8 @@ void main() {
   test('init returns fallback message on PlatformException', () async {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(channel, (MethodCall call) async {
-      throw PlatformException(code: 'error');
-    });
+          throw PlatformException(code: 'error');
+        });
 
     expect(await platform.init(), 'Erro ao inicializar o SDK');
   });
@@ -48,15 +56,12 @@ void main() {
   test('activateStonecode forwards args and returns bool', () async {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(channel, (MethodCall call) async {
-      expect(call.method, 'activateStoneCode');
-      expect(call.arguments, '12345678');
-      return true;
-    });
+          expect(call.method, 'activateStoneCode');
+          expect(call.arguments, '12345678');
+          return true;
+        });
 
-    expect(
-      await platform.activateStonecode(stoneCode: '12345678'),
-      isTrue,
-    );
+    expect(await platform.activateStonecode(stoneCode: '12345678'), isTrue);
   });
 
   test('payment forwards map and returns native payload', () async {
@@ -68,12 +73,12 @@ void main() {
 
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(channel, (MethodCall call) async {
-      expect(call.method, 'payment');
-      expect(call.arguments, payment.toMap());
-      return 'approved';
-    });
+          expect(call.method, 'payment');
+          expect(call.arguments, payment.toMap());
+          return 'approved';
+        });
 
-    expect(await platform.payment(paymentModel: payment), 'approved');
+    expect(await platform.payment(params: payment), 'approved');
   });
 
   test('payment returns fallback message on PlatformException', () async {
@@ -85,11 +90,11 @@ void main() {
 
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(channel, (MethodCall call) async {
-      throw PlatformException(code: 'payment_error');
-    });
+          throw PlatformException(code: 'payment_error');
+        });
 
     expect(
-      await platform.payment(paymentModel: payment),
+      await platform.payment(params: payment),
       'Erro ao processar pagamento',
     );
   });

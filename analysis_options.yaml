@@ -2,3 +2,22 @@ include: package:flutter_lints/flutter.yaml
 
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options
+
+rules:
+  # Alerta quando BuildContext é usado após um await. Usar mounted
+  - use_build_context_synchronously
+
+  # Exige const em construtores quando todos os argumentos são constantes
+  - prefer_const_constructors
+
+  # Exige const em construtores de classes imutáveis (@immutable)
+  - prefer_const_constructors_in_immutables
+
+  # Exige final em campos que não são reatribuídos após a inicialização
+  - prefer_final_fields
+
+  # Exige final em campos de construtores const
+  - prefer_final_fields_in_const_constructors
+
+  # Exige interpolação de string ($variavel) ao invés de concatenação com +
+  - prefer_interpolation_to_compose_strings

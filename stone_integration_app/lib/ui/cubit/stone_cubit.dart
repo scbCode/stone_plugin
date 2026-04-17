@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:stone_plugin/domain/params/payment_params.dart';
 
-import '../../data/model/payment_model.dart';
 import '../../domain/enum/stone_flags.dart';
 import '../../domain/enum/stone_intent_enum.dart';
 import '../../domain/enum/stone_payment_step.dart';
@@ -54,7 +54,7 @@ class StoneCubit extends Cubit<PluginState> {
     emit(PluginLoading());
     try {
       await _repository.payment(
-        paymentModel: PaymentModel(
+        params: PaymentParams(
           type: 'CREDIT_CARD',
           amount: (amount * 100).toStringAsFixed(0),
           stoneCode: '*',

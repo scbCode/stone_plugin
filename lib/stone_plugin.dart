@@ -1,5 +1,5 @@
-import 'data/models/payment_model.dart';
-import 'stone_plugin_platform_interface.dart';
+import 'domain/params/payment_params.dart';
+import 'domain/interface/stone_plugin_platform_interface.dart';
 
 class StonePlugin {
   Future<String?> init() {
@@ -13,8 +13,8 @@ class StonePlugin {
   Future<bool> activateStonecode({required String stoneCode})=>
       StonePluginPlatform.instance.activateStonecode(stoneCode: stoneCode);
 
-  Future<String?> payment({required PaymentModelPlatform paymentModel}) {
-    return StonePluginPlatform.instance.payment(paymentModel: paymentModel);
+  Future<String?> payment({required PaymentParams params}) {
+    return StonePluginPlatform.instance.payment(params: params);
   }
 
   Stream paymentStream() {
