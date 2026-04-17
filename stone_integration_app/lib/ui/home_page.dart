@@ -31,7 +31,7 @@ class _State extends State<HomePage> {
                 },
               ),
             ).then((v) {
-              // if (!context.mounted) return;
+              if (!context.mounted) return;
               context.read<StoneCubit>().selectPaymentCancel();
             });
           }
