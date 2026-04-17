@@ -1,0 +1,13 @@
+#!/bin/sh
+
+echo "Iniciando [flutter analyze] antes do push..."
+flutter analyze
+
+if [ $? -eq 0 ]; then
+    echo "Realizando push..."
+    exit 0 # Permite o push
+else
+    echo "Push cancelado."
+    exit 1 # Cancela o push
+fi
+

@@ -11,8 +11,8 @@ abstract class StonePluginPlatform extends PlatformInterface {
   static final Object _token = Object();
 
   static StonePluginPlatform _instance = MethodChannelStonePlugin(
-    methodChannel: MethodChannel(Consts.channelName),
-    eventChannel: EventChannel(Consts.eventChannelStreamPayment),
+    methodChannel: MethodChannel(channelName),
+    eventChannel: EventChannel(eventChannelStreamPayment),
   );
 
   /// The default instance of [StonePluginPlatform] to use.

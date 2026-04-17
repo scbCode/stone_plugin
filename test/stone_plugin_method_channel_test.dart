@@ -1,4 +1,3 @@
-import 'dart:collection';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -12,12 +11,11 @@ class _PaymentModelStub extends PaymentParams {
     required super.stoneCode,
   });
 
-  HashMap<String, String> toMap() => HashMap<String, String>
-      .from({
+  Map<String, String> toMap() => {
     'type': type,
     'amount': amount,
     'stoneCode': stoneCode,
-  });
+  };
 }
 
 void main() {

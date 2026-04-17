@@ -26,13 +26,12 @@ class _State extends State<HomePage> {
               context: context,
               builder: (context) => PaymentPopUp(
                 onPaymentSelected: (amount) {
-                  this.context.read<StoneCubit>().processPayment(amount);
+                  if (!context.mounted) return;
+                  context.read<StoneCubit>().processPayment(amount);
                 },
               ),
             ).then((v) {
-              if (!mounted) {
-                return;
-              }
+              if (!context.mounted) return;
               context.read<StoneCubit>().selectPaymentCancel();
             });
           }

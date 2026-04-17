@@ -2,6 +2,7 @@ include: package:flutter_lints/flutter.yaml
 
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options
+# https://dart.dev/tools/linter-rules/
 
 rules:
   # Alerta quando BuildContext é usado após um await. Usar mounted
@@ -16,8 +17,17 @@ rules:
   # Exige final em campos que não são reatribuídos após a inicialização
   - prefer_final_fields
 
-  # Exige final em campos de construtores const
-  - prefer_final_fields_in_const_constructors
-
-  # Exige interpolação de string ($variavel) ao invés de concatenação com +
+  - # Exige interpolação de string ($variavel) ao invés de concatenação com +
   - prefer_interpolation_to_compose_strings
+
+  # Evita clausulas vazias em else
+  - avoid_empty_else
+
+  # Evita forEach - Usar for ( var in list )
+  - avoid_function_literals_in_foreach_calls
+
+  # Evita class com somente membros static.
+  - avoid_classes_with_only_static_members
+
+  # Evita parametros sem nome.
+  - avoid_types_as_parameter_names
