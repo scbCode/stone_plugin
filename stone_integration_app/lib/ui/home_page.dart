@@ -38,7 +38,7 @@ class _State extends State<HomePage> {
         },
         builder: (BuildContext context, PluginState state) {
           if (state is PluginLoading) {
-            return  Center(
+            return Center(
               child: CircularProgressIndicator(color: Colors.black),
             );
           }
